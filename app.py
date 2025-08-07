@@ -18,6 +18,7 @@ def index():
 @app.route("/register_user", methods=["POST"])
 def register_user():
     data = request.json
+    print(f"📩 Incoming user data: {data}")  # ✅ Add this
     email = data.get("email")
     user_id = data.get("user_id")
 
