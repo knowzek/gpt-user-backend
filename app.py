@@ -1,14 +1,15 @@
-
 from flask import Flask, request, jsonify
 import json
 import os
 import requests
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)  # ✅ CORS applied once and correctly
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY")
 
-
-app = Flask(__name__)
 DB_PATH = "users.json"
 
 @app.route("/")
@@ -18,7 +19,7 @@ def index():
 @app.route("/register_user", methods=["POST"])
 def register_user():
     data = request.json
-    print(f"📩 Incoming user data: {data}")  # ✅ Add this
+    print(f"📩 Incoming user data: {data}")
     email = data.get("email")
     user_id = data.get("user_id")
 
@@ -36,7 +37,6 @@ def register_user():
         "Content-Type": "application/json"
     }
 
-    # Send to Supabase
     response = requests.post(
         f"{SUPABASE_URL}/rest/v1/users",
         json=payload,
@@ -47,4 +47,3 @@ def register_user():
         return jsonify({"error": "Failed to write to Supabase", "details": response.text}), 500
 
     return jsonify({"status": "stored", "user_id": user_id})
-
